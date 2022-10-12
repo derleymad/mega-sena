@@ -27,8 +27,6 @@ class NumbersAdapter(private val list : List<Int>) : RecyclerView.Adapter<Number
         fun bind(itemCurrent: Int){
             val tvNumber = itemView.findViewById<TextView>(R.id.tv_number_item)
             tvNumber.text = "${itemCurrent.toString().padStart(2,'0')}"
-
         }
     }
-
 }

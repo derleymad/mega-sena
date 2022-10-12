@@ -9,7 +9,6 @@
     tools:context=".ui.MainActivity">
 
     <LinearLayout
-
         android:id="@+id/ln_main"
         android:layout_width="0dp"
         android:padding="8dp"
@@ -41,13 +40,6 @@
             android:textStyle="bold|italic" />
     </LinearLayout>
 
-    <!--    <include-->
-    <!--        android:id="@+id/include"-->
-    <!--        layout="@layout/my_numbers"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-    <!--    -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_numbers"
         android:layout_width="match_parent"
