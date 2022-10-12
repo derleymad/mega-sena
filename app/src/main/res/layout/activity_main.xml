@@ -5,29 +5,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_activity"
     tools:context=".ui.MainActivity">
 
-        <TextView
-            android:id="@+id/tv_main"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/header"
-            android:text="Mega Sena"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            />
+    <LinearLayout
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/my_numbers"
+        android:id="@+id/ln_main"
+        android:layout_width="0dp"
+        android:padding="8dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:paddingStart="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:src="@drawable/trevo"
+            app:layout_constraintBottom_toBottomOf="@+id/ln_main"
+            app:layout_constraintStart_toStartOf="@+id/ln_main"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:text="Mega-Sena"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="36sp"
+            android:textStyle="bold|italic" />
+    </LinearLayout>
+
+    <!--    <include-->
+    <!--        android:id="@+id/include"-->
+    <!--        layout="@layout/my_numbers"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--    -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_numbers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ln_main"
+        tools:itemCount="6"
+        tools:listitem="@layout/my_numbers"
+        tools:orientation="horizontal" />
 
     <Button
         android:id="@+id/button_main"
@@ -38,7 +72,7 @@
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_numbers" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_cartela"
@@ -48,12 +82,13 @@
         android:layout_marginTop="80dp"
         android:background="@drawable/cartela"
         android:padding="16dp"
-        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_main"
-        tools:listitem="@layout/number_item"
-        tools:visibility="visible">
+        app:spanCount="10"
+        tools:itemCount="60"
+        tools:listitem="@layout/number_item">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -78,17 +113,22 @@
         app:layout_constraintBottom_toBottomOf="@+id/button_main"
         app:layout_constraintStart_toEndOf="@+id/button_main"
         app:layout_constraintTop_toTopOf="@+id/button_main" />
+
     <TextView
         android:id="@+id/static_tv_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/rv_cartela"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="32dp"
+        android:background="@drawable/historytextshape"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp"
         android:text="Histórico"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-        />
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_cartela" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_history"
@@ -96,11 +136,12 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:background="@drawable/historyshape"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/static_tv_history" />
+        app:layout_constraintTop_toBottomOf="@+id/static_tv_history"
+        tools:listitem="@layout/history_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

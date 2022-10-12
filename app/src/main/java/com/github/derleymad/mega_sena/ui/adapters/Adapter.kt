@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.github.derleymad.mega_sena.R
+import com.github.derleymad.mega_sena.utils.MAXCARTELA
 
-const val MAXCARTELA = 60
 
 class Adapter(
 //    private val list : List<Int>,
@@ -18,6 +18,7 @@ class Adapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.number_item,parent,false)
+        list.clear()
         for(i in 1..MAXCARTELA){
             list.add(i)
         }
@@ -35,7 +36,6 @@ class Adapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bind(itemCurrent:Int){
-
             val number = itemView.findViewById<TextView>(R.id.number_item_tv)
             if (myList.contains(itemCurrent)){
                 number.setTextColor(ContextCompat.getColor(itemView.context, R.color.red_700))
