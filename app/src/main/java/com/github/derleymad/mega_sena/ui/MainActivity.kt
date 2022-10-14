@@ -2,18 +2,28 @@ package com.github.derleymad.mega_sena.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.derleymad.mega_sena.App
+import com.github.derleymad.mega_sena.R
 import com.github.derleymad.mega_sena.databinding.ActivityMainBinding
 import com.github.derleymad.mega_sena.databinding.MyNumbersBinding
 import com.github.derleymad.mega_sena.model.NumbersFav
+import com.github.derleymad.mega_sena.model.network.ApiInterface
+import com.github.derleymad.mega_sena.model.network.TesteItem
 import com.github.derleymad.mega_sena.ui.adapters.Adapter
 import com.github.derleymad.mega_sena.ui.adapters.HistoryAdapter
 import com.github.derleymad.mega_sena.ui.adapters.NumbersAdapter
 import com.github.derleymad.mega_sena.utils.MAXCARTELA
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 
@@ -33,6 +43,8 @@ class MainActivity : AppCompatActivity(){
         bindingIncluded = MyNumbersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        getMyData()
+
         //POJO MYLIST DEFAULT
         for (i in 1..6){
             myList.add(0)
@@ -46,7 +58,9 @@ class MainActivity : AppCompatActivity(){
         //HISTORY ADAPTER AND RECYCLER VIEW
         historyAdapter = HistoryAdapter(listofNumbersFav)
         binding.rvHistory.adapter =  historyAdapter
-        binding.rvHistory.layoutManager = LinearLayoutManager(this@MainActivity)
+        var linearLayout = LinearLayoutManager(this@MainActivity,LinearLayoutManager.VERTICAL,true)
+        linearLayout.stackFromEnd = true
+        binding.rvHistory.layoutManager =  linearLayout
 
         searchInDbAndUpdateHistoryAdapter()
 
@@ -68,6 +82,32 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
+    private fun getMyData() {
+        val retrofitBuilder = Retrofit.Builder()
+            .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl("https://loteriascaixa-api.herokuapp.com/")
+            .build()
+            .create(ApiInterface::class.java)
+
+        val retrofitData = retrofitBuilder.getData()
+
+        retrofitData.enqueue(object : Callback<TesteItem?> {
+            override fun onResponse(call: Call<TesteItem?>, response: Response<TesteItem?>
+            )
+            {
+                val response = response.body()!!
+
+                Log.i("responseapi",response.data)
+
+            }
+
+            override fun onFailure(call: Call<TesteItem?>, t: Throwable)
+            {
+                Log.e("errorapi","nao foi")
+            }
+        })
+    }
+
     private fun searchInDbAndUpdateHistoryAdapter() {
         Thread{
             val app = application as App
@@ -87,20 +127,44 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun insertInDbAndToastMessage(){
-        Thread{
-            val app =  application as App
-            val dao = app.db.favDao()
-            val numbers = NumbersFav(numbers = myList.toString())
-            dao.insert(
-                numbers
-            )
-            runOnUiThread{
-                Toast.makeText(applicationContext,"sucess",Toast.LENGTH_SHORT).show()
-                listofNumbersFav.add(numbers)
-                historyAdapter.notifyDataSetChanged()
-                binding.rvHistory.visibility = View.VISIBLE
-            }
-        }.start()
+
+        if (myList.contains(0)){
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.no_data))
+                .setMessage(getString(R.string.no_data_request_description))
+                .setNegativeButton(android.R.string.cancel) { _, _ ->
+                }
+                .create()
+                .show()
+
+        }else{
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.save_db))
+                .setMessage(getString(R.string.save_request_description))
+                .setPositiveButton(getString(R.string.save)) { _, _ ->
+                    Thread{
+                        val app =  application as App
+                        val dao = app.db.favDao()
+                        val numbers = NumbersFav(numbers = myList.toString())
+                        dao.insert(numbers)
+                        runOnUiThread{
+                            Toast.makeText(applicationContext,"sucess",Toast.LENGTH_SHORT).show()
+                            listofNumbersFav.add(numbers)
+                            binding.rvHistory.adapter?.notifyItemInserted(listofNumbersFav.size-1)
+                            binding.rvHistory.scrollToPosition(listofNumbersFav.size-1)
+                            binding.rvHistory.visibility = View.VISIBLE
+                        }
+                    }.start()
+                }
+                .setNegativeButton(android.R.string.cancel) { _, _ ->
+                }
+                .create()
+                .show()
+
+
+
+
+        }
     }
 
     private fun generateNumbers() : List<Int> {

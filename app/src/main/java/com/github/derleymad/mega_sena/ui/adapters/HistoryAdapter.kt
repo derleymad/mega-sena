@@ -27,7 +27,7 @@ class HistoryAdapter(val list : List<NumbersFav>) : RecyclerView.Adapter<History
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view){
         fun bind(itemCurrent: NumbersFav){
             val numbers = view.findViewById<TextView>(R.id.tv_static_history_item)
-            numbers.text = itemCurrent.numbers
+            numbers.text =  itemCurrent.numbers
         }
     }
 }
