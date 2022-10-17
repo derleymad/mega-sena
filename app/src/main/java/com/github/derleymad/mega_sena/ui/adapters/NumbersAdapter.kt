@@ -1,11 +1,13 @@
 package com.github.derleymad.mega_sena.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.derleymad.mega_sena.R
+import com.github.derleymad.mega_sena.model.network.TesteItem
 
 class NumbersAdapter(private val list : List<Int>) : RecyclerView.Adapter<NumbersAdapter.ViewHolder>() {
 
@@ -25,6 +27,8 @@ class NumbersAdapter(private val list : List<Int>) : RecyclerView.Adapter<Number
 
     inner class ViewHolder(view:View) : RecyclerView.ViewHolder(view){
         fun bind(itemCurrent: Int){
+
+            val tvData = itemView.findViewById<TextView>(R.id.tv_date)
             val tvNumber = itemView.findViewById<TextView>(R.id.tv_number_item)
             tvNumber.text = "${itemCurrent.toString().padStart(2,'0')}"
         }

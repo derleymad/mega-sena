@@ -30,12 +30,14 @@ import java.util.*
 class MainActivity : AppCompatActivity(){
     private var listofNumbersFav = mutableListOf<NumbersFav>()
     private var myList = mutableListOf<Int>()
+    private var myListLastResult = mutableListOf<String>()
 
     private lateinit var binding : ActivityMainBinding
     private lateinit var bindingIncluded : MyNumbersBinding
 
     private lateinit var historyAdapter: HistoryAdapter
     private lateinit var numbersAdapter: NumbersAdapter
+    private lateinit var lastResultAdapter: NumbersAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +45,16 @@ class MainActivity : AppCompatActivity(){
         bindingIncluded = MyNumbersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        getMyData()
 
         //POJO MYLIST DEFAULT
         for (i in 1..6){
             myList.add(0)
+            myListLastResult.add("0")
+
         }
+
+        //LAST RESULT ADAPTER AND RECYCLER VIEW
+        getMyData()
 
         //NUMBERS ADAPTER AND RECYCLER VIEW
         numbersAdapter = NumbersAdapter(myList)
@@ -70,6 +76,7 @@ class MainActivity : AppCompatActivity(){
         binding.rvCartela.layoutManager = GridLayoutManager(this@MainActivity,10)
 
         binding.buttonMain.setOnClickListener{
+            binding.rvNumbers.visibility = View.VISIBLE
             myList.clear()
             binding.rvCartela.adapter = adapter
             myList.addAll(generateNumbers())
@@ -95,15 +102,26 @@ class MainActivity : AppCompatActivity(){
             override fun onResponse(call: Call<TesteItem?>, response: Response<TesteItem?>
             )
             {
+                binding.progressBar.visibility = View.GONE
+                binding.materialCardView.visibility = View.VISIBLE
                 val response = response.body()!!
-
-                Log.i("responseapi",response.data)
-
+                lastResultAdapter = NumbersAdapter(response.dezenas.map{it.toInt()})
+                binding.rvLastResult.adapter = lastResultAdapter
+                binding.rvLastResult.layoutManager = LinearLayoutManager(this@MainActivity,LinearLayoutManager.HORIZONTAL,false)
+                binding.tvDate.text = response.data
+                if(response.acumulou){
+                    binding.tvAcumulado.text = "Acumulou " + response.acumuladaProxConcurso + " para o dia ${response.dataProxConcurso}"
+                }else{
+                    binding.tvAcumulado.text = "${response.premiacoes[0].premio} dividido com ${response.premiacoes[0].vencedores}"
+                }
             }
 
             override fun onFailure(call: Call<TesteItem?>, t: Throwable)
             {
                 Log.e("errorapi","nao foi")
+                Toast.makeText(this@MainActivity,"Sem conexão com a internet!",Toast.LENGTH_SHORT).show()
+                binding.progressBar.visibility = View.GONE
+                binding.materialCardView.visibility = View.GONE
             }
         })
     }

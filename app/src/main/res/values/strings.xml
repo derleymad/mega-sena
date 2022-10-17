@@ -5,4 +5,5 @@
     <string name="save_request_description">Deseja realmente salvar os números?</string>
     <string name="no_data">Nenhum  número foi gerado</string>
     <string name="no_data_request_description">Não foi possivel salvar, pois não foi gerado nenhum número!</string>
+    <string name="tv_suacartela"><b>Faça a sua</b> cartela!</string>
 </resources>
